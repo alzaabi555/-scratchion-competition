@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronDown, Sparkles, Target, Users, Zap, Trophy, BookOpen, Lightbulb } from "lucide-react";
 import { useState } from "react";
+import { useLocation } from "wouter";
 
 export default function Home() {
+  const [, setLocation] = useLocation();
   const [expandedGoal, setExpandedGoal] = useState<number | null>(null);
 
   const goals = [
@@ -120,10 +122,17 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex gap-4 pt-4">
-                <Button className="btn-neon text-background font-bold text-lg px-8 py-6">
+                <Button 
+                  onClick={() => setLocation("/register")}
+                  className="btn-neon text-background font-bold text-lg px-8 py-6"
+                >
                   انضم الآن
                 </Button>
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary/10 font-bold text-lg px-8 py-6">
+                <Button 
+                  variant="outline" 
+                  className="border-primary text-primary hover:bg-primary/10 font-bold text-lg px-8 py-6"
+                  onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+                >
                   تعرف أكثر
                 </Button>
               </div>
@@ -140,7 +149,7 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section className="py-20 px-4 border-t border-border">
+      <section id="about" className="py-20 px-4 border-t border-border">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
@@ -295,12 +304,19 @@ export default function Home() {
               انضم إلى مسابقة سكراتشيون وكن جزءاً من ثورة البرمجة التعليمية
             </p>
             <div className="flex gap-4 justify-center pt-4">
-              <Button className="btn-neon text-background font-bold text-lg px-8 py-6">
-                سجل الآن
-              </Button>
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary/10 font-bold text-lg px-8 py-6">
-                تواصل معنا
-              </Button>
+            <Button 
+              onClick={() => setLocation("/register")}
+              className="btn-neon text-background font-bold text-lg px-8 py-6"
+            >
+              سجل الآن
+            </Button>
+            <Button 
+              variant="outline" 
+              className="border-primary text-primary hover:bg-primary/10 font-bold text-lg px-8 py-6"
+              onClick={() => window.location.href = 'mailto:info@scratchion.com'}
+            >
+              تواصل معنا
+            </Button>
             </div>
           </div>
         </div>
