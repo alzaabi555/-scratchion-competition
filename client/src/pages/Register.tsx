@@ -3,29 +3,25 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Trophy, Heart, Star, Zap } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { trpc } from "@/lib/trpc";
+
+type SubmissionState = 'form' | 'loading' | 'success' | 'error';
 
 export default function Register() {
   const [, setLocation] = useLocation();
-  const [submitted, setSubmitted] = useState(false);
+  const [state, setState] = useState<SubmissionState>('form');
   const [formData, setFormData] = useState({
-    studentName: "",
-    studentEmail: "",
-    studentPhone: "",
     schoolName: "",
-    schoolEmail: "",
-    schoolPhone: "",
-    grade: "",
-    projectTitle: "",
-    projectDescription: "",
-    teacherName: "",
-    teacherEmail: ""
+    studentName: "",
+    grade: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const registerMutation = trpc.register.submit.useMutation();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -40,34 +36,43 @@ export default function Register() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Save to localStorage for now (later will be saved to database)
-    const registrations = JSON.parse(localStorage.getItem("scratchion_registrations") || "[]");
-    registrations.push({
-      ...formData,
-      registeredAt: new Date().toISOString()
-    });
-    localStorage.setItem("scratchion_registrations", JSON.stringify(registrations));
-    setSubmitted(true);
     
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({
-        studentName: "",
-        studentEmail: "",
-        studentPhone: "",
-        schoolName: "",
-        schoolEmail: "",
-        schoolPhone: "",
-        grade: "",
-        projectTitle: "",
-        projectDescription: "",
-        teacherName: "",
-        teacherEmail: ""
+    if (!formData.schoolName || !formData.studentName || !formData.grade) {
+      alert("يرجى ملء جميع الحقول");
+      return;
+    }
+
+    setState('loading');
+
+    try {
+      const result = await registerMutation.mutateAsync({
+        schoolName: formData.schoolName,
+        studentName: formData.studentName,
+        grade: formData.grade as "grade3" | "grade4" | "grade5" | "grade6",
       });
-    }, 3000);
+
+      if (result.success) {
+        setState('success');
+        // إعادة تعيين النموذج بعد 5 ثوان
+        setTimeout(() => {
+          setFormData({
+            schoolName: "",
+            studentName: "",
+            grade: ""
+          });
+          setState('form');
+        }, 5000);
+      } else {
+        setState('error');
+        setTimeout(() => setState('form'), 3000);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setState('error');
+      setTimeout(() => setState('form'), 3000);
+    }
   };
 
   return (
@@ -98,43 +103,45 @@ export default function Register() {
       </nav>
 
       {/* Main Content */}
-      <section className="py-12 px-4">
-        <div className="container mx-auto max-w-4xl">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold mb-4">
-              <span className="neon-glow">نموذج التسجيل</span>
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              انضم إلى مسابقة سكراتشيون وأظهر مهاراتك البرمجية الإبداعية
-            </p>
-          </div>
-
-          {/* Success Message */}
-          {submitted && (
-            <Card className="card-glow-secondary mb-8 border-accent/50">
-              <div className="flex items-center gap-4 text-center justify-center py-8">
-                <CheckCircle2 className="w-8 h-8 text-accent animate-bounce" />
-                <div>
-                  <h3 className="text-xl font-bold text-accent">تم التسجيل بنجاح! ✨</h3>
-                  <p className="text-muted-foreground">شكراً لتسجيلك في مسابقة سكراتشيون</p>
-                </div>
+      <section className="py-12 px-4 flex items-center justify-center min-h-[calc(100vh-80px)]">
+        <div className="container mx-auto max-w-2xl">
+          {/* Form State */}
+          {state === 'form' && (
+            <div className="space-y-8 animate-in fade-in duration-500">
+              {/* Header */}
+              <div className="text-center space-y-4">
+                <h1 className="text-5xl font-bold">
+                  <span className="neon-glow">انضم إلينا! 🚀</span>
+                </h1>
+                <p className="text-xl text-muted-foreground">
+                  سجل الآن في مسابقة سكراتشيون وأظهر مهاراتك البرمجية
+                </p>
               </div>
-            </Card>
-          )}
 
-          {/* Registration Form */}
-          <Card className="card-glow p-8">
-            <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Student Information */}
-              <div>
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-primary text-background flex items-center justify-center text-sm font-bold">1</span>
-                  بيانات الطالب
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Registration Form */}
+              <Card className="card-glow p-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* School Name */}
                   <div className="space-y-2">
-                    <Label htmlFor="studentName" className="text-foreground font-semibold">اسم الطالب *</Label>
+                    <Label htmlFor="schoolName" className="text-foreground font-semibold text-lg">
+                      اسم المدرسة *
+                    </Label>
+                    <Input
+                      id="schoolName"
+                      name="schoolName"
+                      value={formData.schoolName}
+                      onChange={handleChange}
+                      placeholder="أدخل اسم مدرستك"
+                      required
+                      className="bg-input border-border text-foreground placeholder:text-muted-foreground h-12 text-lg"
+                    />
+                  </div>
+
+                  {/* Student Name */}
+                  <div className="space-y-2">
+                    <Label htmlFor="studentName" className="text-foreground font-semibold text-lg">
+                      اسم الطالب الثلاثي *
+                    </Label>
                     <Input
                       id="studentName"
                       name="studentName"
@@ -142,39 +149,17 @@ export default function Register() {
                       onChange={handleChange}
                       placeholder="أدخل اسمك الكامل"
                       required
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
+                      className="bg-input border-border text-foreground placeholder:text-muted-foreground h-12 text-lg"
                     />
                   </div>
+
+                  {/* Grade */}
                   <div className="space-y-2">
-                    <Label htmlFor="studentEmail" className="text-foreground font-semibold">البريد الإلكتروني *</Label>
-                    <Input
-                      id="studentEmail"
-                      name="studentEmail"
-                      type="email"
-                      value={formData.studentEmail}
-                      onChange={handleChange}
-                      placeholder="بريدك الإلكتروني"
-                      required
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="studentPhone" className="text-foreground font-semibold">رقم الهاتف *</Label>
-                    <Input
-                      id="studentPhone"
-                      name="studentPhone"
-                      type="tel"
-                      value={formData.studentPhone}
-                      onChange={handleChange}
-                      placeholder="رقم هاتفك"
-                      required
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="grade" className="text-foreground font-semibold">الصف الدراسي *</Label>
+                    <Label htmlFor="grade" className="text-foreground font-semibold text-lg">
+                      الصف الدراسي *
+                    </Label>
                     <Select value={formData.grade} onValueChange={handleSelectChange}>
-                      <SelectTrigger className="bg-input border-border text-foreground">
+                      <SelectTrigger className="bg-input border-border text-foreground h-12 text-lg">
                         <SelectValue placeholder="اختر صفك الدراسي" />
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
@@ -185,169 +170,135 @@ export default function Register() {
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-              </div>
 
-              {/* School Information */}
-              <div>
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-secondary text-background flex items-center justify-center text-sm font-bold">2</span>
-                  بيانات المدرسة
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="schoolName" className="text-foreground font-semibold">اسم المدرسة *</Label>
-                    <Input
-                      id="schoolName"
-                      name="schoolName"
-                      value={formData.schoolName}
-                      onChange={handleChange}
-                      placeholder="اسم مدرستك"
-                      required
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="schoolEmail" className="text-foreground font-semibold">بريد المدرسة</Label>
-                    <Input
-                      id="schoolEmail"
-                      name="schoolEmail"
-                      type="email"
-                      value={formData.schoolEmail}
-                      onChange={handleChange}
-                      placeholder="بريد المدرسة الإلكتروني"
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="schoolPhone" className="text-foreground font-semibold">هاتف المدرسة</Label>
-                    <Input
-                      id="schoolPhone"
-                      name="schoolPhone"
-                      type="tel"
-                      value={formData.schoolPhone}
-                      onChange={handleChange}
-                      placeholder="هاتف المدرسة"
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
+                  {/* Submit Button */}
+                  <Button
+                    type="submit"
+                    className="btn-neon text-background font-bold text-lg px-8 py-6 w-full mt-8"
+                    disabled={registerMutation.isPending}
+                  >
+                    {registerMutation.isPending ? 'جاري التسجيل...' : 'تسجيل المشاركة'}
+                  </Button>
+                </form>
+              </Card>
+
+              {/* Info Box */}
+              <Card className="card-glow-secondary">
+                <div className="flex gap-3">
+                  <Sparkles className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="text-muted-foreground">
+                      ستتلقى تأكيد التسجيل على البريد الإلكتروني للمدرسة. تأكد من ملء البيانات بشكل صحيح!
+                    </p>
                   </div>
                 </div>
-              </div>
-
-              {/* Project Information */}
-              <div>
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-accent text-background flex items-center justify-center text-sm font-bold">3</span>
-                  بيانات المشروع
-                </h2>
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="projectTitle" className="text-foreground font-semibold">عنوان المشروع *</Label>
-                    <Input
-                      id="projectTitle"
-                      name="projectTitle"
-                      value={formData.projectTitle}
-                      onChange={handleChange}
-                      placeholder="أدخل عنوان مشروعك البرمجي"
-                      required
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="projectDescription" className="text-foreground font-semibold">وصف المشروع *</Label>
-                    <Textarea
-                      id="projectDescription"
-                      name="projectDescription"
-                      value={formData.projectDescription}
-                      onChange={handleChange}
-                      placeholder="اشرح فكرة مشروعك والمهارات المستخدمة..."
-                      required
-                      rows={5}
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Teacher Information */}
-              <div>
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-primary text-background flex items-center justify-center text-sm font-bold">4</span>
-                  بيانات المعلم/المشرف
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="teacherName" className="text-foreground font-semibold">اسم المعلم/المشرف *</Label>
-                    <Input
-                      id="teacherName"
-                      name="teacherName"
-                      value={formData.teacherName}
-                      onChange={handleChange}
-                      placeholder="اسم المعلم المشرف"
-                      required
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="teacherEmail" className="text-foreground font-semibold">بريد المعلم الإلكتروني *</Label>
-                    <Input
-                      id="teacherEmail"
-                      name="teacherEmail"
-                      type="email"
-                      value={formData.teacherEmail}
-                      onChange={handleChange}
-                      placeholder="بريد المعلم الإلكتروني"
-                      required
-                      className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex gap-4 pt-6">
-                <Button
-                  type="submit"
-                  className="btn-neon text-background font-bold text-lg px-8 py-6 flex-1"
-                >
-                  تسجيل المشاركة
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary/10 font-bold text-lg px-8 py-6"
-                  onClick={() => setLocation("/")}
-                >
-                  إلغاء
-                </Button>
-              </div>
-            </form>
-          </Card>
-
-          {/* Info Box */}
-          <Card className="card-glow-secondary mt-8">
-            <div className="space-y-4">
-              <h3 className="font-bold text-lg">ملاحظات مهمة:</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  <span>تأكد من ملء جميع الحقول المطلوبة بشكل صحيح</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  <span>سيتم التواصل معك على البريد الإلكتروني المسجل</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  <span>يجب أن يكون المشروع من إنتاج الطالب بنفسه</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  <span>الموعد النهائي للتسجيل سيتم إعلانه لاحقاً</span>
-                </li>
-              </ul>
+              </Card>
             </div>
-          </Card>
+          )}
+
+          {/* Loading State */}
+          {state === 'loading' && (
+            <div className="flex flex-col items-center justify-center space-y-6 py-12 animate-in fade-in duration-300">
+              <div className="relative w-24 h-24">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-secondary animate-spin"></div>
+                <div className="absolute inset-2 rounded-full bg-background flex items-center justify-center">
+                  <Zap className="w-10 h-10 text-primary animate-pulse" />
+                </div>
+              </div>
+              <p className="text-xl font-semibold text-center">
+                جاري تسجيل مشاركتك... ⏳
+              </p>
+            </div>
+          )}
+
+          {/* Success State */}
+          {state === 'success' && (
+            <div className="space-y-8 animate-in fade-in duration-500">
+              <div className="text-center space-y-6">
+                {/* Celebration Animation */}
+                <div className="flex justify-center gap-4 mb-6">
+                  <Trophy className="w-16 h-16 text-accent animate-bounce" style={{ animationDelay: '0s' }} />
+                  <Star className="w-16 h-16 text-primary animate-bounce" style={{ animationDelay: '0.2s' }} />
+                  <Heart className="w-16 h-16 text-secondary animate-bounce" style={{ animationDelay: '0.4s' }} />
+                </div>
+
+                {/* Success Message */}
+                <div className="space-y-4">
+                  <h2 className="text-5xl font-bold neon-glow-accent">
+                    مبروك! 🎉
+                  </h2>
+                  <p className="text-2xl font-bold text-foreground">
+                    تم تسجيلك بنجاح في مسابقة سكراتشيون!
+                  </p>
+                </div>
+
+                {/* Success Details */}
+                <Card className="card-glow-secondary space-y-4">
+                  <div className="space-y-3 text-right">
+                    <div className="flex justify-end gap-3 items-center">
+                      <span className="text-lg font-semibold">{formData.schoolName}</span>
+                      <span className="text-primary">🏫</span>
+                    </div>
+                    <div className="flex justify-end gap-3 items-center">
+                      <span className="text-lg font-semibold">{formData.studentName}</span>
+                      <span className="text-primary">👨‍🎓</span>
+                    </div>
+                    <div className="flex justify-end gap-3 items-center">
+                      <span className="text-lg font-semibold">
+                        {formData.grade === 'grade3' && 'الصف الثالث'}
+                        {formData.grade === 'grade4' && 'الصف الرابع'}
+                        {formData.grade === 'grade5' && 'الصف الخامس'}
+                        {formData.grade === 'grade6' && 'الصف السادس'}
+                      </span>
+                      <span className="text-primary">📚</span>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Congratulations Message */}
+                <div className="space-y-4 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg p-6">
+                  <p className="text-lg text-foreground leading-relaxed">
+                    أنت الآن جزء من عائلة مسابقة سكراتشيون! 🌟
+                  </p>
+                  <p className="text-muted-foreground">
+                    تم إرسال تأكيد التسجيل إلى مشرف المسابقة. سيتم التواصل معك قريباً بالتفاصيل الكاملة.
+                  </p>
+                  <p className="text-sm text-muted-foreground italic">
+                    استعد لإظهار مهاراتك البرمجية والإبداعية! 💪
+                  </p>
+                </div>
+
+                {/* Action Button */}
+                <Button
+                  onClick={() => setLocation("/")}
+                  className="btn-neon text-background font-bold text-lg px-8 py-6 w-full"
+                >
+                  العودة للرئيسية
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Error State */}
+          {state === 'error' && (
+            <div className="space-y-8 animate-in fade-in duration-500">
+              <div className="text-center space-y-6">
+                <div className="text-6xl mb-4">❌</div>
+                <h2 className="text-4xl font-bold text-destructive">
+                  حدث خطأ ما!
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  يرجى المحاولة مرة أخرى أو التواصل مع مشرف المسابقة
+                </p>
+                <Button
+                  onClick={() => setState('form')}
+                  className="btn-neon text-background font-bold text-lg px-8 py-6"
+                >
+                  العودة للنموذج
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </div>
