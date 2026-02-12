@@ -50,7 +50,7 @@ export default function Register() {
       const result = await registerMutation.mutateAsync({
         schoolName: formData.schoolName,
         studentName: formData.studentName,
-        grade: formData.grade as "grade3" | "grade4" | "grade5" | "grade6",
+        grade: "grade3",
       });
 
       if (result.success) {
@@ -164,9 +164,6 @@ export default function Register() {
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
                         <SelectItem value="grade3">الصف الثالث</SelectItem>
-                        <SelectItem value="grade4">الصف الرابع</SelectItem>
-                        <SelectItem value="grade5">الصف الخامس</SelectItem>
-                        <SelectItem value="grade6">الصف السادس</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -244,12 +241,7 @@ export default function Register() {
                       <span className="text-primary">👨‍🎓</span>
                     </div>
                     <div className="flex justify-end gap-3 items-center">
-                      <span className="text-lg font-semibold">
-                        {formData.grade === 'grade3' && 'الصف الثالث'}
-                        {formData.grade === 'grade4' && 'الصف الرابع'}
-                        {formData.grade === 'grade5' && 'الصف الخامس'}
-                        {formData.grade === 'grade6' && 'الصف السادس'}
-                      </span>
+                      <span className="text-lg font-semibold">الصف الثالث</span>
                       <span className="text-primary">📚</span>
                     </div>
                   </div>

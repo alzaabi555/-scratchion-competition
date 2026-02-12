@@ -176,7 +176,7 @@ export default function Home() {
               <div className="video-container max-w-sm mx-auto">
                 <video
                   ref={video1Ref}
-                  src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/RMGZFpCReCUPNdyx.mp4"
+                  src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/WvSUxIbVxdPlixnW.mp4"
                   className="w-full rounded-lg"
                   loop
                   playsInline
