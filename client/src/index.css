@@ -218,3 +218,111 @@
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  /* Professional Header Styles */
+  .header-professional {
+    @apply bg-gradient-to-b from-card to-background;
+    border-bottom: 2px solid rgba(0, 217, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 217, 255, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Section Dividers */
+  .section-divider {
+    @apply relative py-2;
+    background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.3), transparent);
+  }
+
+  .section-divider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.5), transparent);
+  }
+
+  .section-divider::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.3), transparent);
+  }
+
+  /* Professional Section Borders */
+  .section-frame {
+    @apply relative;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.05) 0%, rgba(255, 0, 255, 0.05) 100%);
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.1), inset 0 0 30px rgba(0, 217, 255, 0.05);
+  }
+
+  /* Video Container Styles */
+  .video-container {
+    @apply relative rounded-xl overflow-hidden;
+    border: 2px solid rgba(0, 217, 255, 0.3);
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.2), 0 0 60px rgba(255, 0, 255, 0.1), inset 0 0 20px rgba(0, 217, 255, 0.05);
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(255, 0, 255, 0.1) 100%);
+  }
+
+  .video-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(0, 217, 255, 0.1) 0%, transparent 50%, rgba(255, 0, 255, 0.1) 100%);
+    pointer-events: none;
+    border-radius: 0.75rem;
+  }
+
+  /* Content Frame */
+  .content-frame {
+    @apply p-8 rounded-xl;
+    border: 1px solid rgba(0, 217, 255, 0.15);
+    background: linear-gradient(135deg, rgba(26, 31, 58, 0.8) 0%, rgba(26, 31, 58, 0.6) 100%);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.1), inset 0 0 20px rgba(0, 217, 255, 0.02);
+  }
+
+  /* Professional Separator Line */
+  .separator-line {
+    @apply my-8;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.3) 20%, rgba(0, 217, 255, 0.5) 50%, rgba(0, 217, 255, 0.3) 80%, transparent);
+  }
+
+  /* Page Border Frame */
+  .page-frame {
+    @apply min-h-screen;
+    position: relative;
+    border-left: 2px solid rgba(0, 217, 255, 0.15);
+    border-right: 2px solid rgba(0, 217, 255, 0.15);
+  }
+
+  .page-frame::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.3), transparent);
+    z-index: 50;
+  }
+
+  .page-frame::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.3), transparent);
+    z-index: 50;
+  }

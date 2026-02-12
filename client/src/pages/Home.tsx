@@ -1,11 +1,12 @@
 import { Card } from "@/components/ui/card";
-import { ChevronDown, Sparkles, Target, Users, Zap, Trophy, BookOpen, Lightbulb } from "lucide-react";
+import { ChevronDown, Sparkles, Target, Users, Zap, Trophy, BookOpen, Lightbulb, Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const [expandedGoal, setExpandedGoal] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const video1Ref = useRef<HTMLVideoElement>(null);
   const video2Ref = useRef<HTMLVideoElement>(null);
   const video3Ref = useRef<HTMLVideoElement>(null);
@@ -83,7 +84,7 @@ export default function Home() {
     }
   ];
 
-  // Scroll-based video playback logic
+  // Scroll-based video playback logic with immediate stop
   useEffect(() => {
     const handleScroll = () => {
       const video1 = video1Ref.current;
@@ -92,7 +93,7 @@ export default function Home() {
 
       if (video1) {
         const rect1 = video1.getBoundingClientRect();
-        const isInView1 = rect1.top < window.innerHeight && rect1.bottom > 0;
+        const isInView1 = rect1.top < window.innerHeight * 0.8 && rect1.bottom > window.innerHeight * 0.2;
         if (isInView1) {
           video1.play().catch(() => {});
         } else {
@@ -103,7 +104,7 @@ export default function Home() {
 
       if (video2) {
         const rect2 = video2.getBoundingClientRect();
-        const isInView2 = rect2.top < window.innerHeight && rect2.bottom > 0;
+        const isInView2 = rect2.top < window.innerHeight * 0.8 && rect2.bottom > window.innerHeight * 0.2;
         if (isInView2) {
           video2.play().catch(() => {});
         } else {
@@ -114,7 +115,7 @@ export default function Home() {
 
       if (video3) {
         const rect3 = video3.getBoundingClientRect();
-        const isInView3 = rect3.top < window.innerHeight && rect3.bottom > 0;
+        const isInView3 = rect3.top < window.innerHeight * 0.8 && rect3.bottom > window.innerHeight * 0.2;
         if (isInView3) {
           video3.play().catch(() => {});
         } else {
@@ -125,41 +126,70 @@ export default function Home() {
     };
 
     window.addEventListener('scroll', handleScroll);
-    // Trigger on mount
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="page-frame">
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
       </div>
 
+      {/* Professional Header */}
+      <header className="header-professional sticky top-0 z-40">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex items-center justify-between py-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                <span className="text-background font-bold text-lg">S</span>
+              </div>
+              <h1 className="text-2xl font-bold neon-glow">سكراتشيون</h1>
+            </div>
+            <nav className="hidden md:flex items-center gap-8">
+              <button onClick={() => document.getElementById("goals")?.scrollIntoView({ behavior: "smooth" })} className="text-foreground hover:text-primary transition-colors">
+                الأهداف
+              </button>
+              <button onClick={() => document.getElementById("steps")?.scrollIntoView({ behavior: "smooth" })} className="text-foreground hover:text-primary transition-colors">
+                الخطوات
+              </button>
+              <button onClick={() => setLocation("/register")} className="px-6 py-2 rounded-lg bg-gradient-to-r from-primary to-secondary text-background font-bold hover:shadow-lg hover:shadow-primary/50 transition-all">
+                تسجيل
+              </button>
+            </nav>
+            <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section className="relative py-20 px-4 min-h-screen flex items-center justify-center">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Video 1 - الطالب الأول */}
+            {/* Video 1 - الطالب الأول - مصغر */}
             <div className="floating">
-              <video
-                ref={video1Ref}
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/RMGZFpCReCUPNdyx.mp4"
-                className="w-full rounded-lg shadow-2xl"
-                loop
-                playsInline
-              />
+              <div className="video-container max-w-sm mx-auto">
+                <video
+                  ref={video1Ref}
+                  src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/RMGZFpCReCUPNdyx.mp4"
+                  className="w-full rounded-lg"
+                  loop
+                  playsInline
+                />
+              </div>
             </div>
-            <div className="space-y-6">
-              <h1 className="text-5xl lg:text-6xl font-bold">
+            <div className="content-frame">
+              <h1 className="text-5xl lg:text-6xl font-bold mb-6">
                 <span className="neon-glow">مسابقة سكراتشيون</span>
                 <br />
                 <span className="neon-glow-secondary">الإبداع والبرمجة للمستقبل</span>
               </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
+              <p className="text-xl text-muted-foreground leading-relaxed mb-8">
                 مسابقة تفاعلية تهدف إلى تنمية مهارات البرمجة والتفكير الإبداعي وحل المشكلات لدى الطلبة من خلال تطبيق Scratch للصف الثالث، بما يعزز الابتكار والعمل الجماعي والاستعداد للمستقبل الرقمي.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -181,79 +211,83 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Goals Section */}
-      <section id="goals" className="py-20 px-4 border-t border-border">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              <span className="neon-glow">أهداف المسابقة</span>
-            </h2>
-            <p className="text-lg text-muted-foreground">ستة أهداف رئيسية لتحقيق رؤيتنا التعليمية</p>
-          </div>
+      {/* Separator */}
+      <div className="separator-line"></div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {goals.map((goal) => {
-              const IconComponent = goal.icon;
-              return (
-                <Card
-                  key={goal.id}
-                  className="card-glow-secondary cursor-pointer transition-all duration-300 hover:scale-105"
-                  onClick={() => setExpandedGoal(expandedGoal === goal.id ? null : goal.id)}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-lg bg-gradient-to-br ${goal.color}`}>
-                      <IconComponent className="w-6 h-6 text-background" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg mb-2">{goal.title}</h3>
-                      {expandedGoal === goal.id && (
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                          {goal.description}
-                        </p>
-                      )}
-                    </div>
+      {/* Goals Section */}
+      <section id="goals" className="py-20 px-4 section-frame mx-4 lg:mx-auto my-8 max-w-6xl">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4">
+            <span className="neon-glow">أهداف المسابقة</span>
+          </h2>
+          <p className="text-lg text-muted-foreground">ستة أهداف رئيسية لتحقيق رؤيتنا التعليمية</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {goals.map((goal) => {
+            const IconComponent = goal.icon;
+            return (
+              <Card
+                key={goal.id}
+                className="card-glow-secondary cursor-pointer transition-all duration-300 hover:scale-105"
+                onClick={() => setExpandedGoal(expandedGoal === goal.id ? null : goal.id)}
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`p-3 rounded-lg bg-gradient-to-br ${goal.color}`}>
+                    <IconComponent className="w-6 h-6 text-background" />
                   </div>
-                </Card>
-              );
-            })}
-          </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg mb-2">{goal.title}</h3>
+                    {expandedGoal === goal.id && (
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {goal.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       </section>
 
+      {/* Separator */}
+      <div className="separator-line"></div>
+
       {/* Process Section */}
-      <section className="py-20 px-4 border-t border-border">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              <span className="neon-glow-accent">خطوات تنفيذ المسابقة</span>
-            </h2>
-          </div>
+      <section id="steps" className="py-20 px-4 section-frame mx-4 lg:mx-auto my-8 max-w-6xl">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4">
+            <span className="neon-glow-accent">خطوات تنفيذ المسابقة</span>
+          </h2>
+        </div>
 
-          <div className="relative">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-              {steps.map((step, idx) => (
-                <div key={idx} className="relative">
-                  <div className="card-glow text-center hover:shadow-lg transition-all duration-300">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4 text-lg font-bold text-background pulse-glow">
-                      {step.number}
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground">{step.description}</p>
+        <div className="relative">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+            {steps.map((step, idx) => (
+              <div key={idx} className="relative">
+                <div className="card-glow text-center hover:shadow-lg transition-all duration-300">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4 text-lg font-bold text-background pulse-glow">
+                    {step.number}
                   </div>
-                  {idx < steps.length - 1 && (
-                    <div className="hidden md:block absolute top-1/4 -right-4 w-8 h-0.5 bg-gradient-to-r from-primary to-secondary"></div>
-                  )}
+                  <h3 className="font-bold text-lg mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
                 </div>
-              ))}
-            </div>
+                {idx < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-1/4 -right-4 w-8 h-0.5 bg-gradient-to-r from-primary to-secondary"></div>
+                )}
+              </div>
+            ))}
           </div>
+        </div>
 
-          {/* Video 2 - الولد والبنت */}
-          <div className="mt-12 text-center">
+        {/* Video 2 - الولد والبنت - مصغر */}
+        <div className="mt-16 text-center">
+          <div className="video-container max-w-2xl mx-auto">
             <video
               ref={video2Ref}
               src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
-              className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
+              className="w-full rounded-lg"
               loop
               playsInline
             />
@@ -261,48 +295,54 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Separator */}
+      <div className="separator-line"></div>
+
       {/* Collaboration Section */}
-      <section className="py-20 px-4 border-t border-border">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Video 3 - الاحتفال */}
-            <div className="floating">
+      <section className="py-20 px-4 section-frame mx-4 lg:mx-auto my-8 max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Video 3 - الاحتفال */}
+          <div className="floating">
+            <div className="video-container">
               <video
                 ref={video3Ref}
                 src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/kViSQGIfocfxFHQZ.mp4"
-                className="w-full rounded-lg shadow-2xl"
+                className="w-full rounded-lg"
                 loop
                 playsInline
               />
             </div>
-            <div className="space-y-6">
-              <h2 className="text-4xl font-bold">
-                <span className="neon-glow-secondary">العمل الجماعي والابتكار</span>
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                تهدف مسابقة سكراتشيون إلى تعزيز روح التعاون والعمل الجماعي بين الطلبة، حيث يتعلمون كيفية العمل معاً لحل المشاكل والتوصل إلى حلول إبداعية.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  "تنمية مهارات التواصل والتعاون",
-                  "تعزيز الثقة بالنفس والقدرات الشخصية",
-                  "اكتشاف المواهب الخفية لدى الطلبة",
-                  "بناء جيل واعٍ بالتقنية ومواكب للمستقبل"
-                ].map((item, idx) => (
-                  <li key={idx} className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-primary"></div>
-                    <span className="text-foreground">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          </div>
+          <div className="content-frame">
+            <h2 className="text-4xl font-bold mb-6">
+              <span className="neon-glow-secondary">العمل الجماعي والابتكار</span>
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+              تهدف مسابقة سكراتشيون إلى تعزيز روح التعاون والعمل الجماعي بين الطلبة، حيث يتعلمون كيفية العمل معاً لحل المشاكل والتوصل إلى حلول إبداعية.
+            </p>
+            <ul className="space-y-3">
+              {[
+                "تنمية مهارات التواصل والتعاون",
+                "تعزيز الثقة بالنفس والقدرات الشخصية",
+                "اكتشاف المواهب الخفية لدى الطلبة",
+                "بناء جيل واعٍ بالتقنية ومواكب للمستقبل"
+              ].map((item, idx) => (
+                <li key={idx} className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-primary"></div>
+                  <span className="text-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
+      {/* Separator */}
+      <div className="separator-line"></div>
+
       {/* CTA Section */}
-      <section className="py-20 px-4 border-t border-border bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="container mx-auto text-center">
+      <section className="py-20 px-4 section-frame mx-4 lg:mx-auto my-8 max-w-6xl bg-gradient-to-r from-primary/10 to-secondary/10">
+        <div className="text-center">
           <h2 className="text-4xl font-bold mb-6">
             <span className="neon-glow">هل أنت مستعد للانضمام؟</span>
           </h2>
@@ -317,6 +357,9 @@ export default function Home() {
           </button>
         </div>
       </section>
+
+      {/* Footer Spacing */}
+      <div className="h-20"></div>
     </div>
   );
 }
