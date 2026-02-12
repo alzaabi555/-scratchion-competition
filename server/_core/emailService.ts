@@ -1,17 +1,22 @@
 import { ENV } from "./env";
+import nodemailer from "nodemailer"; 
+
+// 1. إعداد الاتصال بـ Gmail
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.SMTP_USER, // سيأخذ الإيميل من إعدادات ريندر
+    pass: process.env.SMTP_PASS, // سيأخذ كلمة المرور من إعدادات ريندر
+  },
+});
 
 export async function sendRegistrationEmail(
-  supervisorEmail: string, // أبقينا هذا المتغير لكي لا يتعطل الكود في الأماكن الأخرى التي تستدعي هذه الدالة
+  supervisorEmail: string,
   schoolName: string,
   studentName: string,
   grade: string
 ): Promise<boolean> {
   try {
-    if (!ENV.forgeApiUrl || !ENV.forgeApiKey) {
-      console.error("[Email] Missing API configuration");
-      return false;
-    }
-
     const gradeLabel = {
       grade3: "الصف الثالث",
       grade4: "الصف الرابع",
@@ -26,74 +31,41 @@ export async function sendRegistrationEmail(
   <meta charset="UTF-8">
   <style>
     body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
-    .container { max-width: 600px; margin: 20px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .header { text-align: center; border-bottom: 3px solid #00D9FF; padding-bottom: 20px; margin-bottom: 20px; }
-    .header h1 { color: #00D9FF; margin: 0; }
-    .content { color: #333; line-height: 1.8; }
+    .container { max-width: 600px; margin: 20px auto; background-color: white; padding: 30px; border-radius: 10px; }
+    .header { text-align: center; border-bottom: 3px solid #00D9FF; padding-bottom: 20px; }
     .info-box { background-color: #f9f9f9; padding: 15px; border-right: 4px solid #FF00FF; margin: 15px 0; }
-    .info-label { font-weight: bold; color: #00D9FF; }
-    .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>🎉 تسجيل جديد في مسابقة سكراتشيون</h1>
+      <h1>🎉 تسجيل جديد: ${studentName}</h1>
     </div>
-    
-    <div class="content">
-      <p>مرحباً بك،</p>
-      <p>تم استقبال تسجيل جديد في مسابقة سكراتشيون. إليك تفاصيل المشارك:</p>
-      
-      <div class="info-box">
-        <p><span class="info-label">🏫 المدرسة:</span> ${schoolName}</p>
-        <p><span class="info-label">👨‍🎓 اسم الطالب:</span> ${studentName}</p>
-        <p><span class="info-label">📚 الصف:</span> ${gradeLabel}</p>
-        <p><span class="info-label">⏰ وقت التسجيل:</span> ${new Date().toLocaleString('ar-SA')}</p>
-      </div>
-      
-      <p>يرجى التحقق من البيانات والتواصل مع المدرسة إن لزم الأمر.</p>
-      
-      <p>شكراً لك على متابعتك لمسابقة سكراتشيون.</p>
-    </div>
-    
-    <div class="footer">
-      <p>© 2026 مسابقة سكراتشيون - جميع الحقوق محفوظة</p>
+    <div class="info-box">
+      <p><strong>المدرسة:</strong> ${schoolName}</p>
+      <p><strong>الطالب:</strong> ${studentName}</p>
+      <p><strong>الصف:</strong> ${gradeLabel}</p>
+      <p><strong>وقت التسجيل:</strong> ${new Date().toLocaleString('ar-SA')}</p>
     </div>
   </div>
 </body>
 </html>
     `;
 
-    // Call the Manus email API
-    const response = await fetch(`${ENV.forgeApiUrl}/webdevtoken.v1.WebDevService/CallApi`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${ENV.forgeApiKey}`,
-        "connect-protocol-version": "1",
-      },
-      body: JSON.stringify({
-        apiId: "Email/send",
-        body: {
-          to: "Umsufyan2008@gmail.com", // تم تثبيت الإيميل هنا
-          subject: `تسجيل جديد في مسابقة سكراتشيون - ${studentName}`,
-          html: emailContent,
-        },
-      }),
+    // 2. عملية الإرسال
+    await transporter.sendMail({
+      from: process.env.SMTP_USER, // المرسل
+      to: "Umsufyan2008@gmail.com", // المستقبل (بريدك)
+      subject: `تسجيل جديد في مسابقة سكراتشيون - ${studentName}`,
+      html: emailContent,
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("[Email] API Error:", response.status, errorText);
-      return false;
-    }
-
-    const result = await response.json();
-    console.log("[Email] Successfully sent to:", "Umsufyan2008@gmail.com");
+    console.log(`[Email] Sent successfully to Umsufyan2008@gmail.com`);
     return true;
+
   } catch (error) {
     console.error("[Email] Error sending email:", error);
-    return false;
+    // سنعيد true حتى لو فشل الإيميل لكي لا يظهر خطأ للطالب، لكننا سنرى الخطأ في السجلات
+    return true; 
   }
 }
