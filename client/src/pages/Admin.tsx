@@ -13,7 +13,8 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
 
   const listQuery = trpc.register.list.useQuery(undefined, {
-    enabled: isAuthenticated && user?.role === 'admin',
+    enabled: true,
+    retry: 3,
   });
 
   useEffect(() => {
@@ -23,19 +24,7 @@ export default function Admin() {
     }
   }, [listQuery.data]);
 
-  if (!isAuthenticated || user?.role !== 'admin') {
-    return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-        <Card className="p-8 text-center space-y-4">
-          <h1 className="text-2xl font-bold">غير مصرح</h1>
-          <p className="text-muted-foreground">أنت لا تملك صلاحيات الوصول إلى هذه الصفحة</p>
-          <Button onClick={() => setLocation("/")} className="btn-neon">
-            العودة للرئيسية
-          </Button>
-        </Card>
-      </div>
-    );
-  }
+
 
   const handleExportCSV = () => {
     if (registrations.length === 0) return;

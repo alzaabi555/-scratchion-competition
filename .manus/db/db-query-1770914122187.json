@@ -1,0 +1,24 @@
+{
+  "query": "SELECT * FROM registrations;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 46BZbbxz7trnryQ.99184da70e7b --database 3MiHtfMgFSSGvzsX4sHWPk --execute SELECT * FROM registrations;",
+  "rows": [
+    {
+      "id": "1",
+      "schoolName": "كل شوي اجرب ",
+      "studentName": "تعبت ",
+      "grade": "grade3",
+      "createdAt": "2026-02-12 16:30:59"
+    },
+    {
+      "id": "2",
+      "schoolName": "1",
+      "studentName": "1",
+      "grade": "grade3",
+      "createdAt": "2026-02-12 16:33:11"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tschoolName\tstudentName\tgrade\tcreatedAt\n1\tكل شوي اجرب \tتعبت \tgrade3\t2026-02-12 16:30:59\n2\t1\t1\tgrade3\t2026-02-12 16:33:11\n",
+  "stderr": "",
+  "execution_time_ms": 1620
+}

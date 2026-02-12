@@ -110,12 +110,9 @@ export const appRouter = router({
         }
       }),
 
-    // Get all registrations (admin only)
-    list: protectedProcedure
-      .query(async ({ ctx }) => {
-        if (ctx.user?.role !== 'admin') {
-          throw new Error('Unauthorized');
-        }
+    // Get all registrations
+    list: publicProcedure
+      .query(async () => {
         return await getAllRegistrations();
       }),
   })
