@@ -1,7 +1,7 @@
 import { ENV } from "./env";
 
 export async function sendRegistrationEmail(
-  supervisorEmail: string,
+  supervisorEmail: string, // أبقينا هذا المتغير لكي لا يتعطل الكود في الأماكن الأخرى التي تستدعي هذه الدالة
   schoolName: string,
   studentName: string,
   grade: string
@@ -76,7 +76,7 @@ export async function sendRegistrationEmail(
       body: JSON.stringify({
         apiId: "Email/send",
         body: {
-          to: supervisorEmail,
+          to: "Umsufyan2008@gmail.com", // تم تثبيت الإيميل هنا
           subject: `تسجيل جديد في مسابقة سكراتشيون - ${studentName}`,
           html: emailContent,
         },
@@ -90,7 +90,7 @@ export async function sendRegistrationEmail(
     }
 
     const result = await response.json();
-    console.log("[Email] Successfully sent to:", supervisorEmail);
+    console.log("[Email] Successfully sent to:", "Umsufyan2008@gmail.com");
     return true;
   } catch (error) {
     console.error("[Email] Error sending email:", error);
