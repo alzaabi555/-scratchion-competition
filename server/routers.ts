@@ -1,10 +1,11 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import { notifyOwner } from "./_core/notification";
-import { sendRegistrationEmail } from "./_core/emailService";
+import { createRegistration, getAllRegistrations } from "./db";
+import { invokeLLM } from "./_core/llm";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -26,54 +27,78 @@ export const appRouter = router({
       .input(z.object({
         schoolName: z.string().min(1, "School name is required"),
         studentName: z.string().min(1, "Student name is required"),
-        grade: z.enum(["grade3", "grade4", "grade5", "grade6"]),
+        grade: z.enum(["grade3"]),
       }))
       .mutation(async ({ input }) => {
         try {
-          // Prepare registration data
-          const registrationData = {
+          // Save registration to database
+          await createRegistration({
             schoolName: input.schoolName,
             studentName: input.studentName,
             grade: input.grade,
-            registeredAt: new Date().toISOString(),
-          };
+          });
 
           // Get supervisor email from environment
           const supervisorEmail = process.env.SUPERVISOR_EMAIL || "umsufyan2008@gmail.com";
 
-          // Send email to supervisor
-          const emailSent = await sendRegistrationEmail(
-            supervisorEmail,
-            input.schoolName,
-            input.studentName,
-            input.grade
-          );
-
-          // Also send notification to Manus dashboard
-          const gradeLabel = {
-            grade3: "الصف الثالث",
-            grade4: "الصف الرابع",
-            grade5: "الصف الخامس",
-            grade6: "الصف السادس",
-          }[input.grade];
-
-          await notifyOwner({
-            title: "📝 تسجيل جديد في مسابقة سكراتشيون",
-            content: `تم استقبال تسجيل جديد في المسابقة:
+          // Send email using LLM-based email service
+          const emailContent = `
+تم استقبال تسجيل جديد في مسابقة سكراتشيون:
 
 🏫 المدرسة: ${input.schoolName}
 👨‍🎓 اسم الطالب: ${input.studentName}
-📚 الصف: ${gradeLabel}
-⏰ وقت التسجيل: ${new Date(registrationData.registeredAt).toLocaleString('ar-SA')}
-📧 البريد الإلكتروني: ${supervisorEmail}
-✉️ حالة البريد: ${emailSent ? "تم الإرسال" : "فشل الإرسال"}`,
+📚 الصف: الصف الثالث
+⏰ وقت التسجيل: ${new Date().toLocaleString('ar-SA')}
+
+شكراً لمشاركتك في مسابقة سكراتشيون!
+          `;
+
+          // Send notification to Manus dashboard
+          await notifyOwner({
+            title: "📝 تسجيل جديد في مسابقة سكراتشيون",
+            content: emailContent,
           });
+
+          // Try to send email via Manus notification system
+          try {
+            const response = await fetch(process.env.BUILT_IN_FORGE_API_URL + '/email/send', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${process.env.BUILT_IN_FORGE_API_KEY}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                to: supervisorEmail,
+                subject: 'تسجيل جديد في مسابقة سكراتشيون',
+                html: `
+                  <div dir="rtl" style="font-family: Arial, sans-serif; color: #333;">
+                    <h2 style="color: #00D9FF;">تم استقبال تسجيل جديد في مسابقة سكراتشيون</h2>
+                    <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                      <p><strong>🏫 المدرسة:</strong> ${input.schoolName}</p>
+                      <p><strong>👨‍🎓 اسم الطالب:</strong> ${input.studentName}</p>
+                      <p><strong>📚 الصف:</strong> الصف الثالث</p>
+                      <p><strong>⏰ وقت التسجيل:</strong> ${new Date().toLocaleString('ar-SA')}</p>
+                    </div>
+                    <p>شكراً لمشاركتك في مسابقة سكراتشيون!</p>
+                  </div>
+                `,
+              }),
+            });
+
+            const emailResult = await response.json();
+            console.log('[Email] Send result:', emailResult);
+          } catch (emailError) {
+            console.error('[Email] Failed to send email:', emailError);
+          }
 
           return {
             success: true,
             message: "تم تسجيل المشاركة بنجاح",
-            data: registrationData,
-            emailSent: emailSent,
+            data: {
+              schoolName: input.schoolName,
+              studentName: input.studentName,
+              grade: input.grade,
+            },
           };
         } catch (error) {
           console.error("Registration error:", error);
@@ -83,6 +108,15 @@ export const appRouter = router({
             error: error instanceof Error ? error.message : "Unknown error",
           };
         }
+      }),
+
+    // Get all registrations (admin only)
+    list: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user?.role !== 'admin') {
+          throw new Error('Unauthorized');
+        }
+        return await getAllRegistrations();
       }),
   })
 });

@@ -25,4 +25,14 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+// Registration table for Scratchion competition
+export const registrations = mysqlTable("registrations", {
+  id: int("id").autoincrement().primaryKey(),
+  schoolName: varchar("schoolName", { length: 255 }).notNull(),
+  studentName: varchar("studentName", { length: 255 }).notNull(),
+  grade: mysqlEnum("grade", ["grade3"]).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Registration = typeof registrations.$inferSelect;
+export type InsertRegistration = typeof registrations.$inferInsert;
