@@ -1,12 +1,14 @@
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronDown, Sparkles, Target, Users, Zap, Trophy, BookOpen, Lightbulb } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const [expandedGoal, setExpandedGoal] = useState<number | null>(null);
+  const video1Ref = useRef<HTMLVideoElement>(null);
+  const video2Ref = useRef<HTMLVideoElement>(null);
+  const video3Ref = useRef<HTMLVideoElement>(null);
 
   const goals = [
     {
@@ -81,124 +83,107 @@ export default function Home() {
     }
   ];
 
+  // Scroll-based video playback logic
+  useEffect(() => {
+    const handleScroll = () => {
+      const video1 = video1Ref.current;
+      const video2 = video2Ref.current;
+      const video3 = video3Ref.current;
+
+      if (video1) {
+        const rect1 = video1.getBoundingClientRect();
+        const isInView1 = rect1.top < window.innerHeight && rect1.bottom > 0;
+        if (isInView1) {
+          video1.play().catch(() => {});
+        } else {
+          video1.pause();
+          video1.currentTime = 0;
+        }
+      }
+
+      if (video2) {
+        const rect2 = video2.getBoundingClientRect();
+        const isInView2 = rect2.top < window.innerHeight && rect2.bottom > 0;
+        if (isInView2) {
+          video2.play().catch(() => {});
+        } else {
+          video2.pause();
+          video2.currentTime = 0;
+        }
+      }
+
+      if (video3) {
+        const rect3 = video3.getBoundingClientRect();
+        const isInView3 = rect3.top < window.innerHeight && rect3.bottom > 0;
+        if (isInView3) {
+          video3.play().catch(() => {});
+        } else {
+          video3.pause();
+          video3.currentTime = 0;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Trigger on mount
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background text-foreground grid-pattern relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
-        <div className="container flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-background" />
-            </div>
-            <h1 className="text-2xl font-bold neon-glow">سكراتشيون</h1>
-          </div>
-          <div className="flex gap-4">
-            <Button variant="ghost" className="text-foreground hover:text-primary">عن المسابقة</Button>
-            <Button variant="ghost" className="text-foreground hover:text-primary">الأهداف</Button>
-            <Button variant="ghost" className="text-foreground hover:text-primary">الخطوات</Button>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
-      <section className="relative py-20 px-4">
-        <div className="container mx-auto">
+      <section className="relative py-20 px-4 min-h-screen flex items-center justify-center">
+        <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 z-10">
-              <div className="space-y-4">
-                <h2 className="text-5xl lg:text-6xl font-bold leading-tight">
-                  <span className="neon-glow">مسابقة سكراتشيون</span>
-                  <br />
-                  <span className="text-foreground">الإبداع والبرمجة للمستقبل</span>
-                </h2>
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                  مسابقة تفاعلية تهدف إلى تنمية مهارات البرمجة والتفكير الإبداعي وحل المشكلات لدى الطلبة من خلال تطبيق Scratch المميز والآمن.
-                </p>
-              </div>
-              <div className="flex gap-4 pt-4">
-                <Button 
-                  onClick={() => setLocation("/register")}
-                  className="btn-neon text-background font-bold text-lg px-8 py-6"
-                >
-                  انضم الآن
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="border-primary text-primary hover:bg-primary/10 font-bold text-lg px-8 py-6"
-                  onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  تعرف أكثر
-                </Button>
-              </div>
-            </div>
-            <div className="relative h-96 lg:h-full floating group cursor-pointer" onMouseEnter={(e) => {
-              const video = e.currentTarget.querySelector('video');
-              if (video) video.play();
-            }} onMouseLeave={(e) => {
-              const video = e.currentTarget.querySelector('video');
-              if (video) {
-                video.pause();
-                video.currentTime = 0;
-              }
-            }}>
-              {/* Video element */}
-              <video 
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/NzkUcyTVyCZewoYA.mp4"
-                className="w-full h-full object-contain drop-shadow-2xl absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            {/* Video 1 - الطالب الأول */}
+            <div className="floating">
+              <video
+                ref={video1Ref}
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
+                className="w-full rounded-lg shadow-2xl"
                 muted
                 loop
-              />
-              {/* Fallback image */}
-              <img 
-                src="https://private-us-east-1.manuscdn.com/sessionFile/e4P4AxqMtiqk8jLxqfHQAW/sandbox/L2QUzAZPlVJzEsyUZb9IJx-img-1_1770840920000_na1fn_c2NyYXRjaGlvbi1oZXJvLW9tYW5pLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZTRQNEF4cU10aXFrOGpMeHFmSFFBVy9zYW5kYm94L0wyUVV6QVpQbFZKekVzeVVaYjlJSngtaW1nLTFfMTc3MDg0MDkyMDAwMF9uYTFmbl9jMk55WVhSamFHbHZiaTFvWlhKdkxXOTtZVzVwTFROay5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=MzWGSmCquWoNZ90Th2iliWnEznTHBdOytHzr6KIWNz82KizxzNzvNNjvczbU~-eOL-NoejliMw0sPYQhCdlGOzJtdp~M-Ui4QDepl9pa1JFdMIRoqD5QPtNHWpu-8CQWBTCSBbGq9yLkJc5jvV1b~Au~4YNj0EVJxVMu0shwXMR~m8nLx5M10Y69YVRSaw6G-whAL6SgZYnk7YKQsdMnlXVrqJbr9xcifJINVZSpq0~Y-AJxsxlyyJJLWVD9w4AneQnjFToFnxXxILhcvuHpI2f4MbeNGcck8KyBJXedrMSv0oX0FnL4dG3jlgnpHu61PD6-VjdJ7cfefBUI-j7U0Q__"
-                alt="Student Programming with Scratch"
-                className="w-full h-full object-contain drop-shadow-2xl group-hover:opacity-0 transition-opacity duration-300"
+                playsInline
               />
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 px-4 border-t border-border">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              <span className="neon-glow-secondary">عن المسابقة</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              سكراتشيون هي مسابقة تهدف إلى تنمية مهارات البرمجة والتفكير الإبداعي وحل المشكلات لدى الطلبة من خلال مسابقة تفاعلية بين المدارس عن طريق تطبيق Scratch للصف الثالث، بما يعزز الابتكار والعمل الجماعي والاستعداد للمستقبل الرقمي.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { icon: Sparkles, title: "الإبداع", desc: "تعزيز الفكر الإبداعي والابتكار" },
-              { icon: Users, title: "التعاون", desc: "العمل الجماعي والتعاون بين الطلبة" },
-              { icon: Zap, title: "التطور", desc: "الاستعداد للمستقبل الرقمي" }
-            ].map((item, idx) => (
-              <Card key={idx} className="card-glow text-center hover:scale-105 transition-transform duration-300">
-                <div className="flex justify-center mb-4">
-                  <div className="p-4 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20">
-                    <item.icon className="w-8 h-8 text-primary" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                <p className="text-muted-foreground">{item.desc}</p>
-              </Card>
-            ))}
+            <div className="space-y-6">
+              <h1 className="text-5xl lg:text-6xl font-bold">
+                <span className="neon-glow">مسابقة سكراتشيون</span>
+                <br />
+                <span className="neon-glow-secondary">الإبداع والبرمجة للمستقبل</span>
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                مسابقة تفاعلية تهدف إلى تنمية مهارات البرمجة والتفكير الإبداعي وحل المشكلات لدى الطلبة من خلال تطبيق Scratch للصف الثالث، بما يعزز الابتكار والعمل الجماعي والاستعداد للمستقبل الرقمي.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  onClick={() => setLocation("/register")}
+                  className="px-8 py-3 rounded-lg bg-gradient-to-r from-primary to-secondary text-background font-bold hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 neon-glow"
+                >
+                  انضم الآن
+                </button>
+                <button
+                  onClick={() => document.getElementById("goals")?.scrollIntoView({ behavior: "smooth" })}
+                  className="px-8 py-3 rounded-lg border-2 border-primary text-primary font-bold hover:bg-primary/10 transition-all duration-300"
+                >
+                  تعرف أكثر
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Goals Section */}
-      <section className="py-20 px-4 border-t border-border">
+      <section id="goals" className="py-20 px-4 border-t border-border">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
@@ -264,31 +249,16 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Video 2 - الولد والبنت */}
           <div className="mt-12 text-center">
-            <div className="relative group cursor-pointer" onMouseEnter={(e) => {
-              const video = e.currentTarget.querySelector('video');
-              if (video) video.play();
-            }} onMouseLeave={(e) => {
-              const video = e.currentTarget.querySelector('video');
-              if (video) {
-                video.pause();
-                video.currentTime = 0;
-              }
-            }}>
-              {/* Video element - الولد والبنت */}
-              <video 
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
-                className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                muted
-                loop
-              />
-              {/* Fallback image */}
-              <img 
-                src="https://private-us-east-1.manuscdn.com/sessionFile/e4P4AxqMtiqk8jLxqfHQAW/sandbox/L2QUzAZPlVJzEsyUZb9IJx-img-5_1770840912000_na1fn_c2NyYXRjaGlvbi1jZWxlYnJhdGlvbi1vbWFuaS0zZA.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZTRQNEF4cU10aXFrOGpMeHFmSFFBVy9zYW5kYm94L0wyUVV6QVpQbFZKekVzeVVaYjlJSngtaW1nLTVfMTc3MDg0MDkxMjAwMF9uYTFmbl9jMk55WVhSamFHbHZiaTFqWld4bFluSmhkR2x2YmkxdmJXRnVhUzB6WkEucG5nP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=AX7sjEt9~qpX6VU5ectgifQ6kxPyjC5QudM7zJmQLhG07xG31cZgh5X8YfaEecLjw8bGNdJl8UJyR9wFErtAK1cKdkO6ssVzw91vBS~bRRJuq2Rni~HXto6LkZKHgWv3OfQnKTzv4YBdC9tuwOi3basMX7tvCuI1R-BQ8bqdx4vFJzaAfjBRIJGDAXkdA~NSQoXJWXZxNpHmJZqwGf3ilZcJqn2ypPpxxONih1~s~NpORj6h8ZE~2ykFe65xd75FvgxH-EKxnJX6k1U55oeNsW77dVPNfpY303k6inyA3PzsOrl9Mb~LlyXHvjhax60K~rTGulkSqGJ2CIy3mRgAZQ__"
-                alt="Collaboration"
-                className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl group-hover:opacity-0 transition-opacity duration-300"
-              />
-            </div>
+            <video
+              ref={video2Ref}
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
+              className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
+              muted
+              loop
+              playsInline
+            />
           </div>
         </div>
       </section>
@@ -297,28 +267,15 @@ export default function Home() {
       <section className="py-20 px-4 border-t border-border">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="floating relative group cursor-pointer" onMouseEnter={(e) => {
-              const video = e.currentTarget.querySelector('video');
-              if (video) video.play();
-            }} onMouseLeave={(e) => {
-              const video = e.currentTarget.querySelector('video');
-              if (video) {
-                video.pause();
-                video.currentTime = 0;
-              }
-            }}>
-              {/* Video element - الاحتفال */}
-              <video 
+            {/* Video 3 - الاحتفال */}
+            <div className="floating">
+              <video
+                ref={video3Ref}
                 src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/kViSQGIfocfxFHQZ.mp4"
-                className="w-full rounded-lg shadow-2xl absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="w-full rounded-lg shadow-2xl"
                 muted
                 loop
-              />
-              {/* Fallback image */}
-              <img 
-                src="https://private-us-east-1.manuscdn.com/sessionFile/e4P4AxqMtiqk8jLxqfHQAW/sandbox/L2QUzAZPlVJzFsyUZb9IJx-img-4_1770840915000_na1fn_c2NyYXRjaGlvbi1jb2xsYWJvcmF0aW9uLW9tYW5pLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZTRQNEF4cU10aXFrOGpMeHFmSFFBVy9zYW5kYm94L0wyUVV6QVpQbFZKekVzeVVaYjlJSngtaW1nLTRfMTc3MDg0MDkxNTAwMF9uYTFmbl9jMk55WVhSamFHbHZiaTFqYjJ4c1lXSnZjbUYwYVc5dUxXOTtZVzVwTFROay5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=jlh-yItZXq~oVa3x6SlarZcvkGMPNxl0zY6P6qdGeGLWJ9w7ZLL~StbhB3pHWrbL8owFlwoMGBuwEoGQ~9iC0gYAmmKkHFqNHSYpcpVCrzR8Orwf-2ceQfY1RugLtKXK9JWkBYIp22dAgZrWC2OojAb9bo0hw8l-pa9~3nZM3iCG5oFGC0DrW6WVkh9ItCMrWdyP8hl-rgmArs-E4ob4FdzDSfwH~e1fUAwvE0C4n3n3ZvsYvRUkTOQmZxKx3708IN0mWAHbbHsIdKCTtlQerfYFsKlUW6KUiU95MyBXArmbFs~TSqKLABJ4Q6pFnYNZ~tNcDY---kKBitLhBZp3Lw__"
-                alt="Celebration"
-                className="w-full rounded-lg shadow-2xl group-hover:opacity-0 transition-opacity duration-300"
+                playsInline
               />
             </div>
             <div className="space-y-6">
@@ -347,72 +304,22 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 border-t border-border">
-        <div className="container mx-auto">
-          <div className="card-glow-secondary text-center space-y-6 max-w-3xl mx-auto">
-            <h2 className="text-4xl font-bold">
-              هل أنت مستعد للانضمام؟
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              انضم إلى مسابقة سكراتشيون وكن جزءاً من ثورة البرمجة التعليمية
-            </p>
-            <div className="flex gap-4 justify-center pt-4">
-            <Button 
-              onClick={() => setLocation("/register")}
-              className="btn-neon text-background font-bold text-lg px-8 py-6"
-            >
-              سجل الآن
-            </Button>
-            <Button 
-              variant="outline" 
-              className="border-primary text-primary hover:bg-primary/10 font-bold text-lg px-8 py-6"
-              onClick={() => window.location.href = 'mailto:info@scratchion.com'}
-            >
-              تواصل معنا
-            </Button>
-            </div>
-          </div>
+      <section className="py-20 px-4 border-t border-border bg-gradient-to-r from-primary/10 to-secondary/10">
+        <div className="container mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-6">
+            <span className="neon-glow">هل أنت مستعد للانضمام؟</span>
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            سجل الآن في مسابقة سكراتشيون وأظهر مهاراتك البرمجية. انضم إلى آلاف الطلاب الذين يستكشفون عالم البرمجة والإبداع.
+          </p>
+          <button
+            onClick={() => setLocation("/register")}
+            className="px-10 py-4 rounded-lg bg-gradient-to-r from-primary to-secondary text-background font-bold text-lg hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 neon-glow"
+          >
+            سجل الآن 🚀
+          </button>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-border py-12 px-4 mt-20">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="font-bold text-lg mb-4">سكراتشيون</h3>
-              <p className="text-muted-foreground text-sm">مسابقة تفاعلية لتنمية مهارات البرمجة والإبداع</p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">الروابط</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition">عن المسابقة</a></li>
-                <li><a href="#" className="hover:text-primary transition">الأهداف</a></li>
-                <li><a href="#" className="hover:text-primary transition">الخطوات</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">المساعدة</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition">الأسئلة الشائعة</a></li>
-                <li><a href="#" className="hover:text-primary transition">التواصل</a></li>
-                <li><a href="#" className="hover:text-primary transition">الشروط</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">تابعنا</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition">Facebook</a></li>
-                <li><a href="#" className="hover:text-primary transition">Twitter</a></li>
-                <li><a href="#" className="hover:text-primary transition">Instagram</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border pt-8 text-center text-muted-foreground">
-            <p>&copy; 2026 مسابقة سكراتشيون. جميع الحقوق محفوظة.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
