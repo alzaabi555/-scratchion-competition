@@ -13,6 +13,31 @@ export type DataApiCallOptions = {
   formData?: Record<string, unknown>;
 };
 
+/**
+ * Send email using Manus Email Service
+ */
+export async function sendEmail(options: {
+  to: string;
+  subject: string;
+  html: string;
+  from?: string;
+}): Promise<boolean> {
+  try {
+    const result = await callDataApi("SendEmail", {
+      body: {
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        from: options.from || "noreply@scratchion.com",
+      },
+    });
+    return result ? true : false;
+  } catch (error) {
+    console.error("[Email] Failed to send email:", error);
+    return false;
+  }
+}
+
 export async function callDataApi(
   apiId: string,
   options: DataApiCallOptions = {}
