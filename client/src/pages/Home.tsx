@@ -137,11 +137,28 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-            <div className="relative h-96 lg:h-full floating">
+            <div className="relative h-96 lg:h-full floating group cursor-pointer" onMouseEnter={(e) => {
+              const video = e.currentTarget.querySelector('video');
+              if (video) video.play();
+            }} onMouseLeave={(e) => {
+              const video = e.currentTarget.querySelector('video');
+              if (video) {
+                video.pause();
+                video.currentTime = 0;
+              }
+            }}>
+              {/* Video element */}
+              <video 
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/NzkUcyTVyCZewoYA.mp4"
+                className="w-full h-full object-contain drop-shadow-2xl absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                muted
+                loop
+              />
+              {/* Fallback image */}
               <img 
-                src="https://private-us-east-1.manuscdn.com/sessionFile/e4P4AxqMtiqk8jLxqfHQAW/sandbox/L2QUzAZPlVJzEsyUZb9IJx-img-1_1770840920000_na1fn_c2NyYXRjaGlvbi1oZXJvLW9tYW5pLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZTRQNEF4cU10aXFrOGpMeHFmSFFBVy9zYW5kYm94L0wyUVV6QVpQbFZKekVzeVVaYjlJSngtaW1nLTFfMTc3MDg0MDkyMDAwMF9uYTFmbl9jMk55WVhSamFHbHZiaTFvWlhKdkxXOXRZVzVwTFROay5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=MzWGSmCquWoNZ90Th2iliWnEznTHBdOytHzr6KIWNz82KizxzNzvNNjvczbU~-eOL-NoejliMw0sPYQhCdlGOzJtdp~M-Ui4QDepl9pa1JFdMIRoqD5QPtNHWpu-8CQWBTCSBbGq9yLkJc5jvV1b~Au~4YNj0EVJxVMu0shwXMR~m8nLx5M10Y69YVRSaw6G-whAL6SgZYnk7YKQsdMnlXVrqJbr9xcifJINVZSpq0~Y-AJxsxlyyJJLWVD9w4AneQnjFToFnxXxILhcvuHpI2f4MbeNGcck8KyBJXedrMSv0oX0FnL4dG3jlgnpHu61PD6-VjdJ7cfefBUI-j7U0Q__"
+                src="https://private-us-east-1.manuscdn.com/sessionFile/e4P4AxqMtiqk8jLxqfHQAW/sandbox/L2QUzAZPlVJzEsyUZb9IJx-img-1_1770840920000_na1fn_c2NyYXRjaGlvbi1oZXJvLW9tYW5pLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZTRQNEF4cU10aXFrOGpMeHFmSFFBVy9zYW5kYm94L0wyUVV6QVpQbFZKekVzeVVaYjlJSngtaW1nLTFfMTc3MDg0MDkyMDAwMF9uYTFmbl9jMk55WVhSamFHbHZiaTFvWlhKdkxXOTtZVzVwTFROay5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=MzWGSmCquWoNZ90Th2iliWnEznTHBdOytHzr6KIWNz82KizxzNzvNNjvczbU~-eOL-NoejliMw0sPYQhCdlGOzJtdp~M-Ui4QDepl9pa1JFdMIRoqD5QPtNHWpu-8CQWBTCSBbGq9yLkJc5jvV1b~Au~4YNj0EVJxVMu0shwXMR~m8nLx5M10Y69YVRSaw6G-whAL6SgZYnk7YKQsdMnlXVrqJbr9xcifJINVZSpq0~Y-AJxsxlyyJJLWVD9w4AneQnjFToFnxXxILhcvuHpI2f4MbeNGcck8KyBJXedrMSv0oX0FnL4dG3jlgnpHu61PD6-VjdJ7cfefBUI-j7U0Q__"
                 alt="Student Programming with Scratch"
-                className="w-full h-full object-contain drop-shadow-2xl"
+                className="w-full h-full object-contain drop-shadow-2xl group-hover:opacity-0 transition-opacity duration-300"
               />
             </div>
           </div>
@@ -261,11 +278,28 @@ export default function Home() {
       <section className="py-20 px-4 border-t border-border">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="floating">
+            <div className="floating relative group cursor-pointer" onMouseEnter={(e) => {
+              const video = e.currentTarget.querySelector('video');
+              if (video) video.play();
+            }} onMouseLeave={(e) => {
+              const video = e.currentTarget.querySelector('video');
+              if (video) {
+                video.pause();
+                video.currentTime = 0;
+              }
+            }}>
+              {/* Video element */}
+              <video 
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
+                className="w-full rounded-lg shadow-2xl absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                muted
+                loop
+              />
+              {/* Fallback image */}
               <img 
                 src="https://private-us-east-1.manuscdn.com/sessionFile/e4P4AxqMtiqk8jLxqfHQAW/sandbox/L2QUzAZPlVJzEsyUZb9IJx-img-5_1770840912000_na1fn_c2NyYXRjaGlvbi1jZWxlYnJhdGlvbi1vbWFuaS0zZA.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZTRQNEF4cU10aXFrOGpMeHFmSFFBVy9zYW5kYm94L0wyUVV6QVpQbFZKekVzeVVaYjlJSngtaW1nLTVfMTc3MDg0MDkxMjAwMF9uYTFmbl9jMk55WVhSamFHbHZiaTFqWld4bFluSmhkR2x2YmkxdmJXRnVhUzB6WkEucG5nP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=AX7sjEt9~qpX6VU5ectgifQ6kxPyjC5QudM7zJmQLhG07xG31cZgh5X8YfaEecLjw8bGNdJl8UJyR9wFErtAK1cKdkO6ssVzw91vBS~bRRJuq2Rni~HXto6LkZKHgWv3OfQnKTzv4YBdC9tuwOi3basMX7tvCuI1R-BQ8bqdx4vFJzaAfjBRIJGDAXkdA~NSQoXJWXZxNpHmJZqwGf3ilZcJqn2ypPpxxONih1~s~NpORj6h8ZE~2ykFe65xd75FvgxH-EKxnJX6k1U55oeNsW77dVPNfpY303k6inyA3PzsOrl9Mb~LlyXHvjhax60K~rTGulkSqGJ2CIy3mRgAZQ__"
                 alt="Students Collaborating"
-                className="w-full rounded-lg shadow-2xl"
+                className="w-full rounded-lg shadow-2xl group-hover:opacity-0 transition-opacity duration-300"
               />
             </div>
             <div className="space-y-6">
