@@ -275,9 +275,9 @@ export default function Home() {
                 video.currentTime = 0;
               }
             }}>
-              {/* Video element - الاحتفال */}
+              {/* Video element - الولد والبنت */}
               <video 
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/kViSQGIfocfxFHQZ.mp4"
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
                 className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 muted
                 loop
@@ -285,7 +285,7 @@ export default function Home() {
               {/* Fallback image */}
               <img 
                 src="https://private-us-east-1.manuscdn.com/sessionFile/e4P4AxqMtiqk8jLxqfHQAW/sandbox/L2QUzAZPlVJzEsyUZb9IJx-img-5_1770840912000_na1fn_c2NyYXRjaGlvbi1jZWxlYnJhdGlvbi1vbWFuaS0zZA.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZTRQNEF4cU10aXFrOGpMeHFmSFFBVy9zYW5kYm94L0wyUVV6QVpQbFZKekVzeVVaYjlJSngtaW1nLTVfMTc3MDg0MDkxMjAwMF9uYTFmbl9jMk55WVhSamFHbHZiaTFqWld4bFluSmhkR2x2YmkxdmJXRnVhUzB6WkEucG5nP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=AX7sjEt9~qpX6VU5ectgifQ6kxPyjC5QudM7zJmQLhG07xG31cZgh5X8YfaEecLjw8bGNdJl8UJyR9wFErtAK1cKdkO6ssVzw91vBS~bRRJuq2Rni~HXto6LkZKHgWv3OfQnKTzv4YBdC9tuwOi3basMX7tvCuI1R-BQ8bqdx4vFJzaAfjBRIJGDAXkdA~NSQoXJWXZxNpHmJZqwGf3ilZcJqn2ypPpxxONih1~s~NpORj6h8ZE~2ykFe65xd75FvgxH-EKxnJX6k1U55oeNsW77dVPNfpY303k6inyA3PzsOrl9Mb~LlyXHvjhax60K~rTGulkSqGJ2CIy3mRgAZQ__"
-                alt="Celebration"
+                alt="Collaboration"
                 className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl group-hover:opacity-0 transition-opacity duration-300"
               />
             </div>
@@ -307,9 +307,9 @@ export default function Home() {
                 video.currentTime = 0;
               }
             }}>
-              {/* Video element - الولد والبنت */}
+              {/* Video element - الاحتفال */}
               <video 
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/kViSQGIfocfxFHQZ.mp4"
                 className="w-full rounded-lg shadow-2xl absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 muted
                 loop
@@ -317,7 +317,7 @@ export default function Home() {
               {/* Fallback image */}
               <img 
                 src="https://private-us-east-1.manuscdn.com/sessionFile/e4P4AxqMtiqk8jLxqfHQAW/sandbox/L2QUzAZPlVJzFsyUZb9IJx-img-4_1770840915000_na1fn_c2NyYXRjaGlvbi1jb2xsYWJvcmF0aW9uLW9tYW5pLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZTRQNEF4cU10aXFrOGpMeHFmSFFBVy9zYW5kYm94L0wyUVV6QVpQbFZKekVzeVVaYjlJSngtaW1nLTRfMTc3MDg0MDkxNTAwMF9uYTFmbl9jMk55WVhSamFHbHZiaTFqYjJ4c1lXSnZjbUYwYVc5dUxXOTtZVzVwTFROay5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=jlh-yItZXq~oVa3x6SlarZcvkGMPNxl0zY6P6qdGeGLWJ9w7ZLL~StbhB3pHWrbL8owFlwoMGBuwEoGQ~9iC0gYAmmKkHFqNHSYpcpVCrzR8Orwf-2ceQfY1RugLtKXK9JWkBYIp22dAgZrWC2OojAb9bo0hw8l-pa9~3nZM3iCG5oFGC0DrW6WVkh9ItCMrWdyP8hl-rgmArs-E4ob4FdzDSfwH~e1fUAwvE0C4n3n3ZvsYvRUkTOQmZxKx3708IN0mWAHbbHsIdKCTtlQerfYFsKlUW6KUiU95MyBXArmbFs~TSqKLABJ4Q6pFnYNZ~tNcDY---kKBitLhBZp3Lw__"
-                alt="Collaboration"
+                alt="Celebration"
                 className="w-full rounded-lg shadow-2xl group-hover:opacity-0 transition-opacity duration-300"
               />
             </div>
