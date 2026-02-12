@@ -147,9 +147,8 @@ export default function Home() {
             <div className="floating">
               <video
                 ref={video1Ref}
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/RMGZFpCReCUPNdyx.mp4"
                 className="w-full rounded-lg shadow-2xl"
-                muted
                 loop
                 playsInline
               />
@@ -255,7 +254,6 @@ export default function Home() {
               ref={video2Ref}
               src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/mAllPcHswxOUdFPT.mp4"
               className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
-              muted
               loop
               playsInline
             />
@@ -273,7 +271,6 @@ export default function Home() {
                 ref={video3Ref}
                 src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032449208/kViSQGIfocfxFHQZ.mp4"
                 className="w-full rounded-lg shadow-2xl"
-                muted
                 loop
                 playsInline
               />
